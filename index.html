@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北十勝揚｜新人培訓紀錄表</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-1:#fcfcfb;
+    --page:#f4f2ec;
+    --card:#ffffff;
+    --text-primary:#0b0b0b;
+    --text-secondary:#52514e;
+    --text-muted:#898781;
+    --gridline:#e1e0d9;
+    --border:rgba(11,11,11,0.10);
+    --border-strong:rgba(11,11,11,0.16);
+
+    --stage1:#2a78d6;
+    --stage1-track:#b7d3f6;
+    --stage1-wash:#eaf2fc;
+
+    --stage2:#1baf7a;
+    --stage2-track:#a9e3cf;
+    --stage2-wash:#e7f8f1;
+
+    --gold:#eda100;
+    --gold-wash:#fdf2dc;
+    --gold-dark:#a56e00;
+
+    --good:#0ca30c;
+    --good-wash:#e6f6e6;
+    --warning:#fab219;
+    --warning-wash:#fef4de;
+    --muted-pill:#eceae2;
+
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow-card: 0 1px 2px rgba(11,11,11,0.04), 0 8px 24px -12px rgba(11,11,11,0.12);
+    --shadow-pop: 0 12px 40px -8px rgba(11,11,11,0.28);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page);
+    color:var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0 0 auto 0; height:280px;
+    background: radial-gradient(1200px 400px at 15% -10%, #eaf2fc 0%, transparent 60%),
+                radial-gradient(900px 360px at 90% -20%, #fdf2dc 0%, transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+  .wrap{ position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:28px 20px 80px; }
+
+  a,button,input,select{ font-family:inherit; }
+  button{ cursor:pointer; }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+    margin-bottom:26px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; gap:14px; align-items:center; }
+  .brand-mark{
+    width:52px; height:52px; border-radius:16px; flex:none;
+    background: linear-gradient(145deg, var(--stage1), #1c5cab);
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px; box-shadow: var(--shadow-card);
+  }
+  .brand h1{ margin:0; font-size:20px; letter-spacing:.02em; }
+  .brand p{ margin:2px 0 0; font-size:13px; color:var(--text-secondary); }
+
+  .top-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .btn{
+    border:1px solid var(--border-strong); background:var(--card); color:var(--text-primary);
+    padding:9px 14px; border-radius:999px; font-size:13px; font-weight:600;
+    display:inline-flex; align-items:center; gap:6px; transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .btn:hover{ box-shadow:var(--shadow-card); transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0); }
+  .btn-primary{ background:linear-gradient(145deg, var(--stage1), #1c5cab); color:#fff; border-color:transparent; }
+  .btn-gold{ background:linear-gradient(145deg, var(--gold), #c98500); color:#fff; border-color:transparent; }
+  .btn-ghost{ background:transparent; }
+  .btn-sm{ padding:6px 11px; font-size:12px; }
+  .btn-danger{ color:#a3312f; border-color:rgba(163,49,47,0.3); background:#fdf3f2; }
+  .helper-note{ font-size:11px; color:var(--text-muted); width:100%; text-align:right; margin-top:4px;}
+
+  /* ---------- Stat tiles ---------- */
+  .stats-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px; }
+  .stat-tile{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:16px 18px; box-shadow:var(--shadow-card);
+  }
+  .stat-tile .label{ font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .stat-tile .value{ font-size:26px; font-weight:600; }
+  .stat-tile .value small{ font-size:13px; color:var(--text-muted); font-weight:500; margin-left:2px;}
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{ display:flex; gap:10px; align-items:center; margin-bottom:16px; flex-wrap:wrap; }
+  .search-input, .sort-select{
+    border:1px solid var(--border-strong); background:var(--card); border-radius:999px;
+    padding:9px 14px; font-size:13px; color:var(--text-primary);
+  }
+  .search-input{ flex:1; min-width:180px; }
+  .search-input:focus, .sort-select:focus{ outline:2px solid var(--stage1); outline-offset:1px; }
+
+  /* ---------- Employee grid / cards ---------- */
+  .emp-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:14px; }
+  .emp-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:18px; box-shadow:var(--shadow-card); text-align:left; position:relative; overflow:hidden;
+    transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .emp-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-pop); }
+  .emp-card.done-milestone{ background: linear-gradient(180deg, var(--gold-wash), var(--card) 60%); }
+  .emp-top{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .avatar{
+    width:44px; height:44px; border-radius:50%; flex:none; color:#fff; font-weight:700; font-size:16px;
+    display:flex; align-items:center; justify-content:center; box-shadow: inset 0 -3px 6px rgba(0,0,0,0.15);
+  }
+  .emp-name{ font-size:15px; font-weight:700; }
+  .emp-meta{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+  .stage-pill{
+    display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px;
+    border-radius:999px; margin-top:6px;
+  }
+  .stage-pill.s1{ background:var(--stage1-wash); color:#184f95; }
+  .stage-pill.s2{ background:var(--stage2-wash); color:#0d6b49; }
+  .stage-pill.done{ background:var(--gold-wash); color:var(--gold-dark); }
+
+  .emp-body{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .ring-wrap{ position:relative; width:64px; height:64px; flex:none; }
+  .ring-wrap svg{ transform:rotate(-90deg); }
+  .ring-pct{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700;
+  }
+  .emp-progress-text{ font-size:12px; color:var(--text-secondary); }
+  .emp-progress-text b{ color:var(--text-primary); }
+  .trophy-flag{ position:absolute; top:14px; right:14px; font-size:18px; opacity:.35; }
+  .trophy-flag.lit{ opacity:1; filter:drop-shadow(0 2px 4px rgba(237,161,0,.5)); }
+
+  .empty-state{
+    text-align:center; padding:60px 20px; color:var(--text-secondary);
+    background:var(--card); border-radius:var(--radius-lg); border:1px dashed var(--border-strong);
+  }
+  .empty-state .emoji{ font-size:40px; margin-bottom:10px; }
+  .empty-state h3{ margin:0 0 6px; color:var(--text-primary); }
+
+  /* ---------- Detail view ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+  .back-btn{ margin-bottom:14px; }
+
+  .emp-header{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:22px; box-shadow:var(--shadow-card); display:flex; gap:20px; align-items:center; flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .emp-header .avatar{ width:66px; height:66px; font-size:22px; }
+  .emp-header-info{ flex:1; min-width:200px; }
+  .emp-header-info h2{ margin:0 0 4px; font-size:20px; }
+  .emp-header-info .emp-meta{ font-size:13px; }
+  .emp-header-actions{ display:flex; gap:8px; }
+  .big-ring-wrap{ position:relative; width:104px; height:104px; flex:none; }
+  .big-ring-wrap svg{ transform:rotate(-90deg); }
+  .big-ring-pct{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .big-ring-pct .n{ font-size:22px; font-weight:700; }
+  .big-ring-pct .l{ font-size:10px; color:var(--text-muted); }
+
+  .badges-row{ display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+  .badge{
+    flex:1; min-width:150px; display:flex; align-items:center; gap:10px;
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:12px 14px; box-shadow:var(--shadow-card); opacity:.55; filter:grayscale(.4);
+    transition:opacity .3s ease, filter .3s ease, transform .3s ease;
+  }
+  .badge.unlocked{ opacity:1; filter:none; background:linear-gradient(145deg,#fff,var(--gold-wash)); border-color:rgba(237,161,0,.35); }
+  .badge .ic{ font-size:24px; }
+  .badge .t{ font-size:12.5px; font-weight:700; }
+  .badge .s{ font-size:10.5px; color:var(--text-muted); }
+
+  .stage-section{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-card); margin-bottom:16px; overflow:hidden;
+  }
+  .stage-head{ padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .stage-head-left{ display:flex; align-items:center; gap:12px; }
+  .stage-emoji{ font-size:26px; }
+  .stage-head h3{ margin:0; font-size:16px; }
+  .stage-head .sub{ font-size:12px; color:var(--text-secondary); margin-top:2px;}
+  .stage-bar-wrap{ min-width:160px; }
+  .stage-bar-track{ height:8px; border-radius:999px; background:var(--muted-pill); overflow:hidden; }
+  .stage-bar-fill{ height:100%; border-radius:999px; transition:width .35s ease; }
+  .stage-bar-label{ font-size:11px; color:var(--text-secondary); margin-top:5px; text-align:right; }
+  .stage-complete-tag{
+    font-size:11px; font-weight:700; color:#0d6b49; background:var(--good-wash);
+    padding:3px 9px; border-radius:999px; display:inline-flex; align-items:center; gap:4px;
+  }
+
+  .category-block{ border-top:1px solid var(--gridline); padding:14px 20px 6px; }
+  .category-title{ display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:var(--text-secondary); margin-bottom:8px; }
+
+  .item-row{
+    display:grid; grid-template-columns: auto 1fr auto auto; gap:10px; align-items:center;
+    padding:9px 0; border-bottom:1px dashed var(--gridline);
+  }
+  .item-row:last-child{ border-bottom:none; }
+  .item-label{ font-size:13.5px; }
+  .status-toggle{ display:inline-flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden; }
+  .status-toggle button{
+    border:none; background:var(--card); font-size:11px; padding:6px 10px; color:var(--text-secondary); font-weight:600;
+    border-right:1px solid var(--border);
+  }
+  .status-toggle button:last-child{ border-right:none; }
+  .status-toggle button.active[data-s="pending"]{ background:var(--muted-pill); color:var(--text-primary); }
+  .status-toggle button.active[data-s="inprogress"]{ background:var(--warning-wash); color:#8a5a00; }
+  .status-toggle button.active[data-s="done"]{ background:var(--good-wash); color:#0d6b49; }
+  .item-date{ width:128px; border:1px solid var(--border-strong); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .item-mentor{ width:96px; border:1px solid var(--border-strong); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .item-date:disabled, .item-mentor:disabled{ background:var(--page); color:var(--text-muted); }
+
+  .course-note{
+    grid-column: 1 / -1; margin:-2px 0 8px; background:var(--stage1-wash); border-radius:10px;
+    padding:2px 12px;
+  }
+  .course-note summary{
+    cursor:pointer; font-size:11.5px; color:#184f95; font-weight:600; padding:7px 0; list-style:none;
+    display:flex; align-items:center; gap:5px; user-select:none;
+  }
+  .course-note summary::-webkit-details-marker{ display:none; }
+  .course-note summary::before{ content:'▸'; font-size:10px; transition:transform .15s ease; }
+  .course-note[open] summary::before{ transform:rotate(90deg); }
+  .course-note ul{ margin:0 0 10px; padding-left:18px; font-size:12px; color:var(--text-secondary); line-height:1.6; }
+  .course-note .disclaimer{ font-size:10.5px; color:var(--text-muted); margin:0 0 8px; }
+
+  .milestone-card{
+    border-radius:var(--radius-lg); padding:26px; text-align:center; position:relative; overflow:hidden;
+    border:1px solid var(--border); box-shadow:var(--shadow-card);
+    background: linear-gradient(180deg, var(--card), var(--page));
+  }
+  .milestone-card.unlocked{
+    background: linear-gradient(160deg, #fff8ea, #fdecc2 60%, #fbdfa0);
+    border-color: rgba(237,161,0,.4);
+  }
+  .milestone-trophy{ font-size:46px; filter:grayscale(1) opacity(.5); margin-bottom:6px; }
+  .milestone-card.unlocked .milestone-trophy{ filter:none; }
+  .milestone-title{ font-size:17px; font-weight:800; margin-bottom:4px; }
+  .milestone-sub{ font-size:13px; color:var(--text-secondary); max-width:420px; margin:0 auto 14px; }
+  .milestone-date-row{ display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; }
+  .milestone-date-row input{ border:1px solid var(--border-strong); border-radius:8px; padding:6px 10px; font-size:13px; }
+
+  footer.print-tools{ display:flex; justify-content:flex-end; margin-top:16px; }
+
+  /* ---------- Dialogs ---------- */
+  dialog{
+    border:none; border-radius:var(--radius-lg); padding:0; box-shadow:var(--shadow-pop);
+    width:min(420px, 92vw);
+  }
+  dialog::backdrop{ background:rgba(11,11,11,0.45); backdrop-filter: blur(1px); }
+  .dialog-inner{ padding:22px; }
+  .dialog-inner h3{ margin:0 0 14px; }
+  .field{ margin-bottom:12px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:5px; }
+  .field input{ width:100%; border:1px solid var(--border-strong); border-radius:9px; padding:9px 11px; font-size:14px; }
+  .dialog-actions{ display:flex; justify-content:flex-end; gap:8px; margin-top:18px; }
+
+  .banner{
+    background:var(--stage1-wash); border:1px solid rgba(42,120,214,.25); border-radius:var(--radius-md);
+    padding:10px 16px; font-size:12.5px; color:#184f95; margin-bottom:18px; display:flex; gap:8px; align-items:center;
+  }
+
+  @media (max-width:640px){
+    .stats-row{ grid-template-columns:repeat(2,1fr); }
+    .item-row{ grid-template-columns:1fr; gap:6px; }
+    .status-toggle{ order:2; }
+    .item-date,.item-mentor{ width:100%; order:3; }
+  }
+
+  @media print{
+    body::before{ display:none; }
+    .no-print{ display:none !important; }
+    .wrap{ padding:0; max-width:none; }
+    .stage-section, .milestone-card, .emp-header{ box-shadow:none; border:1px solid #ccc; break-inside:avoid; }
+    dialog{ display:none !important; }
+  }
+</style>
+</head>
+<body class="app">
+<div class="wrap">
+
+  <div class="topbar no-print">
+    <div class="brand">
+      <div class="brand-mark">🌱</div>
+      <div>
+        <h1>北十勝揚・新人培訓紀錄表</h1>
+        <p>組織發展主管專用｜新人養成追蹤系統</p>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end;">
+      <div class="top-actions">
+        <button class="btn btn-ghost btn-sm" id="btnImport">📥 匯入備份</button>
+        <button class="btn btn-ghost btn-sm" id="btnExport">💾 匯出備份</button>
+        <button class="btn btn-primary" id="btnAddEmployee">＋ 新增新人</button>
+        <input type="file" id="fileImport" accept="application/json" style="display:none">
+      </div>
+      <div class="helper-note">資料僅保存在本頁瀏覽期間，請定期「匯出備份」保存 JSON 檔</div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD VIEW ============ -->
+  <div class="view active" id="viewDashboard">
+
+    <div class="stats-row">
+      <div class="stat-tile">
+        <div class="label">團隊新人總數</div>
+        <div class="value" id="statTotal">0<small>位</small></div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">平均完成率</div>
+        <div class="value" id="statAvg">0<small>%</small></div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">已達成人階段</div>
+        <div class="value" id="statStage1">0<small>位</small></div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">已晉升主管資格</div>
+        <div class="value" id="statMilestone">0<small>位</small></div>
+      </div>
+    </div>
+
+    <div class="toolbar no-print">
+      <input class="search-input" id="searchInput" type="text" placeholder="🔍 搜尋新人姓名...">
+      <select class="sort-select" id="sortSelect">
+        <option value="name">依姓名排序</option>
+        <option value="progress-desc">完成率：高到低</option>
+        <option value="progress-asc">完成率：低到高</option>
+        <option value="join-desc">最新加入</option>
+        <option value="join-asc">最早加入</option>
+      </select>
+    </div>
+
+    <div class="emp-grid" id="empGrid"></div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="emoji">🌱</div>
+      <h3>還沒有新人紀錄</h3>
+      <p>點擊右上角「＋ 新增新人」，開始建立第一位夥伴的培訓歷程</p>
+    </div>
+  </div>
+
+  <!-- ============ DETAIL VIEW ============ -->
+  <div class="view" id="viewDetail">
+    <button class="btn btn-ghost back-btn no-print" id="btnBack">← 返回總覽</button>
+
+    <div class="banner no-print">💡 每完成一項訓練，記得填寫完成日期與帶訓主管，見證夥伴一步步成長。</div>
+
+    <div class="emp-header">
+      <div class="avatar" id="detAvatar" style="width:66px;height:66px;font-size:22px;">王</div>
+      <div class="emp-header-info">
+        <h2 id="detName">—</h2>
+        <div class="emp-meta" id="detMeta">—</div>
+        <div id="detStagePill"></div>
+      </div>
+      <div class="big-ring-wrap">
+        <svg width="104" height="104" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="46" fill="none" stroke="var(--stage1-track)" stroke-width="10"/>
+          <circle id="detRingFill" cx="52" cy="52" r="46" fill="none" stroke="var(--stage1)" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+        <div class="big-ring-pct"><span class="n" id="detRingPct">0%</span><span class="l">總進度</span></div>
+      </div>
+      <div class="emp-header-actions no-print">
+        <button class="btn btn-sm" id="btnEditEmployee">✏️ 編輯資料</button>
+        <button class="btn btn-sm btn-danger" id="btnDeleteEmployee">🗑 刪除</button>
+      </div>
+    </div>
+
+    <div class="badges-row">
+      <div class="badge" id="badgeStage1">
+        <div class="ic">🌱</div>
+        <div><div class="t">新人階段達成</div><div class="s">壽險銷售職能全數完成</div></div>
+      </div>
+      <div class="badge" id="badgeStage2">
+        <div class="ic">🚀</div>
+        <div><div class="t">業務員階段達成</div><div class="s">組織發展職能全數完成</div></div>
+      </div>
+      <div class="badge" id="badgeMilestone">
+        <div class="ic">🏆</div>
+        <div><div class="t">晉升主管資格</div><div class="s">完整培訓歷程達標</div></div>
+      </div>
+    </div>
+
+    <div id="stageContainer"></div>
+
+    <div class="milestone-card" id="milestoneCard">
+      <div class="milestone-trophy">🏆</div>
+      <div class="milestone-title" id="milestoneTitle">達成晉升主管資格</div>
+      <div class="milestone-sub" id="milestoneSub">完成新人階段與業務員階段所有課程、操作與證照後，即可解鎖晉升主管資格。</div>
+      <div class="milestone-date-row" id="milestoneDateRow" style="display:none;">
+        <label for="milestoneDate">達成日期：</label>
+        <input type="date" id="milestoneDate">
+      </div>
+    </div>
+
+    <footer class="print-tools no-print">
+      <button class="btn" id="btnPrint">🖨 列印 / 匯出 PDF</button>
+    </footer>
+  </div>
+
+</div>
+
+<!-- Add / Edit employee dialog -->
+<dialog id="empDialog">
+  <div class="dialog-inner">
+    <h3 id="empDialogTitle">新增新人</h3>
+    <div class="field">
+      <label for="fName">姓名 *</label>
+      <input id="fName" type="text" placeholder="例：陳小美">
+    </div>
+    <div class="field">
+      <label for="fRole">單位 / 職稱（選填）</label>
+      <input id="fRole" type="text" placeholder="例：北十勝揚通訊處">
+    </div>
+    <div class="field">
+      <label for="fJoin">加入日期</label>
+      <input id="fJoin" type="date">
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="empDialogCancel">取消</button>
+      <button class="btn btn-primary" id="empDialogSave">儲存</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Confirm delete dialog -->
+<dialog id="confirmDialog">
+  <div class="dialog-inner">
+    <h3>確定要刪除這位新人的紀錄嗎？</h3>
+    <p style="font-size:13px; color:var(--text-secondary);">此動作無法復原，建議刪除前先匯出備份。</p>
+    <div class="dialog-actions">
+      <button class="btn btn-ghost" id="confirmCancel">取消</button>
+      <button class="btn btn-danger" id="confirmOk">確定刪除</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Import mode dialog (merge vs replace) -->
+<dialog id="importDialog">
+  <div class="dialog-inner">
+    <h3>如何匯入這份備份？</h3>
+    <p style="font-size:13px; color:var(--text-secondary);">
+      目前畫面上有 <b id="importCurrentCount">0</b> 位新人，匯入的檔案內有 <b id="importIncomingCount">0</b> 位。
+      如果是夥伴傳來的紀錄，建議選「合併加入」，把兩邊的新人都保留下來。
+    </p>
+    <div class="dialog-actions" style="justify-content:space-between; flex-wrap:wrap; gap:8px;">
+      <button class="btn btn-ghost" id="importCancel">取消</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" id="importReplace">取代目前資料</button>
+        <button class="btn btn-primary" id="importMerge">合併加入</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.3/confetti.browser.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ================= Training structure (from 壽險事業培訓表) ================= */
+const TRAINING_STRUCTURE = [
+  {
+    id:'stage1', name:'新人階段', duration:'前 3 個月', track:'壽險銷售', emoji:'🌱',
+    fillVar:'--stage1', trackVar:'--stage1-track', washVar:'--stage1-wash',
+    categories:[
+      {id:'course', name:'課程', icon:'📘', items:[
+        {id:'s1c1', label:'保險意義與功能'},
+        {id:'s1c2', label:'威盛制度'},
+        {id:'s1c3', label:'WPM財富管理流程'},
+        {id:'s1c4', label:'主力商品及系統化銷售'},
+        {id:'s1c5', label:'三問'},
+        {id:'s1c6', label:'客戶經營與轉介紹延伸'},
+        {id:'s1c7', label:'醫療險及保單健診'},
+        {id:'s1c8', label:'推銷職能認證'},
+      ]},
+      {id:'operation', name:'操作', icon:'🎯', items:[
+        {id:'s1o1', label:'達成業績20B'},
+      ]},
+      {id:'license', name:'證照', icon:'📜', items:[
+        {id:'s1l1', label:'通過公會考試'},
+      ]},
+    ]
+  },
+  {
+    id:'stage2', name:'業務員階段', duration:'第 4～12 個月（9 個月）', track:'組織發展', emoji:'🚀',
+    fillVar:'--stage2', trackVar:'--stage2-track', washVar:'--stage2-wash',
+    categories:[
+      {id:'course', name:'課程', icon:'📘', items:[
+        {id:'s2c1', label:'DISC及適性測驗分析'},
+        {id:'s2c2', label:'增員名單來源'},
+        {id:'s2c3', label:'組織發展的重要性'},
+        {id:'s2c4', label:'培訓SOP的運用'},
+      ]},
+      {id:'operation', name:'操作', icon:'🎯', items:[
+        {id:'s2o1', label:'引進3位新人力'},
+      ]},
+      {id:'license', name:'證照', icon:'📜', items:[
+        {id:'s2l1', label:'外幣證照考試'},
+        {id:'s2l2', label:'產險證照考試'},
+        {id:'s2l3', label:'投資型證照考試'},
+      ]},
+    ]
+  }
+];
+
+/* 課程重點（教學大綱範例）— 依項目 id 對應。這是通用參考大綱，
+   實際授課內容請依公司教材為準，可依需求調整文字。 */
+const COURSE_NOTES = {
+  s1c1: ['保險的本質與社會功能：風險移轉、家庭與財務保障', '人壽保險基本種類與運作原理（壽險、健康險、意外險）', '為何客戶需要保險：從生活情境切入的說明方式'],
+  s1c2: ['公司職涯發展與獎酬制度架構說明', '各職級資格條件、考核標準與晉升路徑', '增才、育才與晉升三者的連動關係'],
+  s1c3: ['WPM（財富管理）顧問式銷售流程六步驟', '客戶財務健檢與需求分析工具的使用方式', '從單一商品銷售轉向顧問式服務的心法'],
+  s1c4: ['公司主力商品特色、保障內容與適用客群', '系統化銷售流程：接觸、說明、促成三階段', '商品組合建議邏輯與話術演練'],
+  s1c5: ['三問銷售法的核心邏輯與提問設計技巧', '如何透過提問挖掘客戶真實需求與痛點', '角色扮演實戰演練與話術修正'],
+  s1c6: ['客戶關係經營與售後服務循環', '轉介紹的最佳時機與開口技巧', '名單管理系統與長期客戶維繫方法'],
+  s1c7: ['醫療險商品架構、保障範圍與理賠重點', '保單健診流程與檢視工具操作', '從健診結果延伸加保或轉介紹的機會點'],
+  s1c8: ['銷售流程與職能考核標準說明', '認證評核方式、通過標準與常見扣分項', '模擬演練與考前準備重點整理'],
+  s2c1: ['DISC 四種人格特質（支配、影響、穩健、謹慎）介紹', '如何運用 DISC 判讀客戶與新人的溝通風格', '適性測驗在增員面談與帶人管理上的應用'],
+  s2c2: ['增員名單開發的管道與方法（緣故、陌生、轉介）', '目標對象的篩選標準與初步評估方式', '陌生開發與緣故名單經營技巧比較'],
+  s2c3: ['為何要建立組織：個人戰力 vs. 團隊戰力', '組織發展與長期收入穩定性的關聯', '從業務員到主管的角色與心態轉換'],
+  s2c4: ['新人培訓標準作業流程（SOP）整體介紹', '如何運用本培訓紀錄表追蹤新人進度', '培訓帶領技巧與新人常見問題處理方式'],
+};
+
+function allItems(){
+  const out = [];
+  TRAINING_STRUCTURE.forEach(st => st.categories.forEach(c => c.items.forEach(it => out.push({...it, stage:st.id, cat:c.id}))));
+  return out;
+}
+const ALL_ITEMS = allItems();
+const TOTAL_ITEMS = ALL_ITEMS.length;
+
+const AVATAR_COLORS = ['#2a78d6','#1baf7a','#eda100','#4a3aa7','#e87ba4','#eb6834'];
+
+/* ================= State (in-memory only — no localStorage) ================= */
+let state = { employees: [] };
+let currentEmployeeId = null;
+let idCounter = 1;
+
+function uid(prefix){ return prefix + '_' + (idCounter++) + '_' + Math.random().toString(36).slice(2,7); }
+
+function newEmployee(name, role, joinDate){
+  const emp = {
+    id: uid('emp'),
+    name: name || '未命名',
+    role: role || '',
+    joinDate: joinDate || todayISO(),
+    colorIdx: state.employees.length % AVATAR_COLORS.length,
+    milestoneDate: '',
+    records: {}
+  };
+  ALL_ITEMS.forEach(it => { emp.records[it.id] = { status:'pending', date:'', mentor:'' }; });
+  return emp;
+}
+
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+/* ================= Progress calculations ================= */
+function stageProgress(emp, stage){
+  const items = stage.categories.flatMap(c=>c.items);
+  const done = items.filter(it => emp.records[it.id] && emp.records[it.id].status === 'done').length;
+  return { done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 0 };
+}
+function overallProgress(emp){
+  const done = ALL_ITEMS.filter(it => emp.records[it.id] && emp.records[it.id].status === 'done').length;
+  return { done, total: TOTAL_ITEMS, pct: Math.round(done/TOTAL_ITEMS*100) };
+}
+function isStageComplete(emp, stage){ const p = stageProgress(emp, stage); return p.total>0 && p.done === p.total; }
+function isMilestoneUnlocked(emp){ return TRAINING_STRUCTURE.every(st => isStageComplete(emp, st)); }
+function currentStageLabel(emp){
+  if (isMilestoneUnlocked(emp)) return { text:'已晉升主管資格', cls:'done' };
+  for (let i = TRAINING_STRUCTURE.length-1; i>=0; i--){
+    const st = TRAINING_STRUCTURE[i];
+    const p = stageProgress(emp, st);
+    if (p.done > 0 || i===0) return { text: st.name, cls: 'stage-pill ' + (st.id==='stage1'?'s1':'s2') };
+  }
+  return { text:'新人階段', cls:'s1' };
+}
+
+/* ================= Rendering: dashboard ================= */
+function ringCircumference(r){ return 2*Math.PI*r; }
+
+function renderRing(svgFillEl, pct, r){
+  const c = ringCircumference(r);
+  svgFillEl.setAttribute('stroke-dasharray', c.toFixed(1));
+  svgFillEl.setAttribute('stroke-dashoffset', (c*(1-pct/100)).toFixed(1));
+}
+
+function fmtDate(d){
+  if(!d) return '';
+  const dt = new Date(d+'T00:00:00');
+  if(isNaN(dt)) return d;
+  return `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')}`;
+}
+
+function renderDashboard(){
+  const emps = state.employees;
+  document.getElementById('statTotal').innerHTML = emps.length + '<small>位</small>';
+  const avg = emps.length ? Math.round(emps.reduce((s,e)=>s+overallProgress(e).pct,0)/emps.length) : 0;
+  document.getElementById('statAvg').innerHTML = avg + '<small>%</small>';
+  const s1done = emps.filter(e=>isStageComplete(e, TRAINING_STRUCTURE[0])).length;
+  document.getElementById('statStage1').innerHTML = s1done + '<small>位</small>';
+  const msDone = emps.filter(isMilestoneUnlocked).length;
+  document.getElementById('statMilestone').innerHTML = msDone + '<small>位</small>';
+
+  let list = emps.slice();
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) list = list.filter(e => e.name.includes(q));
+  const sort = document.getElementById('sortSelect').value;
+  list.sort((a,b)=>{
+    if (sort==='name') return a.name.localeCompare(b.name, 'zh-Hant');
+    if (sort==='progress-desc') return overallProgress(b).pct - overallProgress(a).pct;
+    if (sort==='progress-asc') return overallProgress(a).pct - overallProgress(b).pct;
+    if (sort==='join-desc') return (b.joinDate||'').localeCompare(a.joinDate||'');
+    if (sort==='join-asc') return (a.joinDate||'').localeCompare(b.joinDate||'');
+    return 0;
+  });
+
+  const grid = document.getElementById('empGrid');
+  grid.innerHTML = '';
+  document.getElementById('emptyState').style.display = emps.length ? 'none' : 'block';
+  grid.style.display = emps.length ? '' : 'none';
+
+  list.forEach(emp => {
+    const p = overallProgress(emp);
+    const ms = isMilestoneUnlocked(emp);
+    const stageInfo = currentStageLabel(emp);
+    const card = document.createElement('button');
+    card.className = 'emp-card' + (ms ? ' done-milestone' : '');
+    card.style.textAlign='left';
+    card.style.border = '1px solid var(--border)';
+    card.setAttribute('data-id', emp.id);
+    card.innerHTML = `
+      <div class="trophy-flag ${ms?'lit':''}">🏆</div>
+      <div class="emp-top">
+        <div class="avatar" style="background:${AVATAR_COLORS[emp.colorIdx % AVATAR_COLORS.length]}">${emp.name.slice(0,1)}</div>
+        <div>
+          <div class="emp-name">${escapeHtml(emp.name)}</div>
+          <div class="emp-meta">${escapeHtml(emp.role||'—')} · 加入 ${fmtDate(emp.joinDate)}</div>
+          <span class="stage-pill ${stageInfo.cls.includes('done')?'done':(stageInfo.cls.includes('s2')?'s2':'s1')}">${stageInfo.text}</span>
+        </div>
+      </div>
+      <div class="emp-body">
+        <div class="emp-progress-text">已完成 <b>${p.done}</b> / ${p.total} 項訓練</div>
+        <div class="ring-wrap">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="var(--stage1-track)" stroke-width="7"/>
+            <circle class="ringfill" cx="32" cy="32" r="27" fill="none" stroke="${ms?'var(--gold)':'var(--stage1)'}" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+          <div class="ring-pct">${p.pct}%</div>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', ()=> openDetail(emp.id));
+    grid.appendChild(card);
+    renderRing(card.querySelector('.ringfill'), p.pct, 27);
+  });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ================= Rendering: detail ================= */
+function openDetail(id){
+  currentEmployeeId = id;
+  document.getElementById('viewDashboard').classList.remove('active');
+  document.getElementById('viewDetail').classList.add('active');
+  renderDetail();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+function backToDashboard(){
+  currentEmployeeId = null;
+  document.getElementById('viewDetail').classList.remove('active');
+  document.getElementById('viewDashboard').classList.add('active');
+  renderDashboard();
+}
+
+let prevUnlocked = { stage1:false, stage2:false, milestone:false };
+
+function renderDetail(){
+  const emp = state.employees.find(e=>e.id===currentEmployeeId);
+  if (!emp){ backToDashboard(); return; }
+
+  document.getElementById('detAvatar').textContent = emp.name.slice(0,1);
+  document.getElementById('detAvatar').style.background = AVATAR_COLORS[emp.colorIdx % AVATAR_COLORS.length];
+  document.getElementById('detName').textContent = emp.name;
+  document.getElementById('detMeta').textContent = `${emp.role||'—'} · 加入日期 ${fmtDate(emp.joinDate)}`;
+  const stageInfo = currentStageLabel(emp);
+  document.getElementById('detStagePill').innerHTML = `<span class="stage-pill ${stageInfo.cls.includes('done')?'done':(stageInfo.cls.includes('s2')?'s2':'s1')}">${stageInfo.text}</span>`;
+
+  const overall = overallProgress(emp);
+  document.getElementById('detRingPct').textContent = overall.pct + '%';
+  const ringFill = document.getElementById('detRingFill');
+  ringFill.setAttribute('stroke', isMilestoneUnlocked(emp) ? 'var(--gold)' : 'var(--stage1)');
+  renderRing(ringFill, overall.pct, 46);
+
+  const s1complete = isStageComplete(emp, TRAINING_STRUCTURE[0]);
+  const s2complete = isStageComplete(emp, TRAINING_STRUCTURE[1]);
+  const msUnlocked = isMilestoneUnlocked(emp);
+
+  const b1 = document.getElementById('badgeStage1'); b1.classList.toggle('unlocked', s1complete);
+  const b2 = document.getElementById('badgeStage2'); b2.classList.toggle('unlocked', s2complete);
+  const b3 = document.getElementById('badgeMilestone'); b3.classList.toggle('unlocked', msUnlocked);
+
+  // Confetti on fresh unlock transitions
+  if (s1complete && !prevUnlocked.stage1) burstConfetti('#2a78d6');
+  if (s2complete && !prevUnlocked.stage2) burstConfetti('#1baf7a');
+  if (msUnlocked && !prevUnlocked.milestone) burstConfetti('#eda100', true);
+  prevUnlocked = { stage1:s1complete, stage2:s2complete, milestone:msUnlocked };
+
+  // Stage sections
+  const container = document.getElementById('stageContainer');
+  container.innerHTML = '';
+  TRAINING_STRUCTURE.forEach(stage => {
+    const p = stageProgress(emp, stage);
+    const complete = p.total>0 && p.done===p.total;
+    const section = document.createElement('div');
+    section.className = 'stage-section';
+    section.innerHTML = `
+      <div class="stage-head" style="background:${complete? 'var('+stage.washVar+')' : 'transparent'}">
+        <div class="stage-head-left">
+          <div class="stage-emoji">${stage.emoji}</div>
+          <div>
+            <h3>${stage.name} ${complete? '<span class="stage-complete-tag">✓ 已完成</span>':''}</h3>
+            <div class="sub">${stage.duration}｜職能主軸：${stage.track}</div>
+          </div>
+        </div>
+        <div class="stage-bar-wrap">
+          <div class="stage-bar-track"><div class="stage-bar-fill" style="width:${p.pct}%; background:var(${stage.fillVar});"></div></div>
+          <div class="stage-bar-label">${p.done} / ${p.total} 完成（${p.pct}%）</div>
+        </div>
+      </div>
+    `;
+    stage.categories.forEach(cat => {
+      const block = document.createElement('div');
+      block.className = 'category-block';
+      block.innerHTML = `<div class="category-title"><span>${cat.icon}</span><span>${cat.name}</span></div>`;
+      cat.items.forEach(it => {
+        const rec = emp.records[it.id] || {status:'pending', date:'', mentor:''};
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <div class="status-toggle" data-item="${it.id}">
+            <button type="button" data-s="pending" class="${rec.status==='pending'?'active':''}">未開始</button>
+            <button type="button" data-s="inprogress" class="${rec.status==='inprogress'?'active':''}">進行中</button>
+            <button type="button" data-s="done" class="${rec.status==='done'?'active':''}">已完成</button>
+          </div>
+          <div class="item-label">${escapeHtml(it.label)}</div>
+          <input type="date" class="item-date" data-item="${it.id}" data-field="date" value="${rec.date||''}" ${rec.status==='pending'?'disabled':''} title="完成/開始日期">
+          <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${rec.status==='pending'?'disabled':''}>
+        `;
+        block.appendChild(row);
+        if (COURSE_NOTES[it.id]){
+          const note = document.createElement('details');
+          note.className = 'course-note';
+          note.innerHTML = `
+            <summary>📖 課程重點大綱</summary>
+            <div class="disclaimer">※ 通用教學大綱範例，實際授課內容請依公司教材為準</div>
+            <ul>${COURSE_NOTES[it.id].map(pt=>`<li>${escapeHtml(pt)}</li>`).join('')}</ul>
+          `;
+          block.appendChild(note);
+        }
+      });
+      section.appendChild(block);
+    });
+    container.appendChild(section);
+  });
+
+  // Milestone card
+  const mCard = document.getElementById('milestoneCard');
+  mCard.classList.toggle('unlocked', msUnlocked);
+  document.getElementById('milestoneSub').textContent = msUnlocked
+    ? '恭喜！所有培訓項目皆已達標，正式具備晉升主管資格 🎉'
+    : `完成新人階段與業務員階段所有課程、操作與證照後，即可解鎖晉升主管資格。目前總進度 ${overall.pct}%。`;
+  const dateRow = document.getElementById('milestoneDateRow');
+  const dateInput = document.getElementById('milestoneDate');
+  if (msUnlocked){
+    dateRow.style.display = 'flex';
+    dateInput.value = emp.milestoneDate || todayISO();
+    if (!emp.milestoneDate){ emp.milestoneDate = dateInput.value; }
+  } else {
+    dateRow.style.display = 'none';
+  }
+
+  // wire events (delegated fresh each render)
+  container.querySelectorAll('.status-toggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const itemId = btn.parentElement.getAttribute('data-item');
+      const s = btn.getAttribute('data-s');
+      const rec = emp.records[itemId];
+      rec.status = s;
+      if (s !== 'pending' && !rec.date) rec.date = todayISO();
+      if (s === 'pending'){ /* keep history but disable fields */ }
+      renderDetail();
+      renderDashboard();
+    });
+  });
+  container.querySelectorAll('.item-date, .item-mentor').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const itemId = inp.getAttribute('data-item');
+      const field = inp.getAttribute('data-field');
+      emp.records[itemId][field] = inp.value;
+    });
+  });
+}
+
+function burstConfetti(color, big){
+  if (typeof confetti !== 'function') return;
+  confetti({
+    particleCount: big ? 160 : 70,
+    spread: big ? 100 : 65,
+    origin: { y: 0.6 },
+    colors: [color, '#ffffff', '#eda100']
+  });
+}
+
+/* ================= Dialogs: add / edit employee ================= */
+const empDialog = document.getElementById('empDialog');
+let editingEmployeeId = null;
+
+function openAddDialog(){
+  editingEmployeeId = null;
+  document.getElementById('empDialogTitle').textContent = '新增新人';
+  document.getElementById('fName').value = '';
+  document.getElementById('fRole').value = '';
+  document.getElementById('fJoin').value = todayISO();
+  empDialog.showModal();
+  document.getElementById('fName').focus();
+}
+function openEditDialog(){
+  const emp = state.employees.find(e=>e.id===currentEmployeeId);
+  if (!emp) return;
+  editingEmployeeId = emp.id;
+  document.getElementById('empDialogTitle').textContent = '編輯新人資料';
+  document.getElementById('fName').value = emp.name;
+  document.getElementById('fRole').value = emp.role;
+  document.getElementById('fJoin').value = emp.joinDate;
+  empDialog.showModal();
+}
+document.getElementById('empDialogCancel').addEventListener('click', ()=> empDialog.close());
+document.getElementById('empDialogSave').addEventListener('click', ()=>{
+  const name = document.getElementById('fName').value.trim();
+  if (!name){ document.getElementById('fName').focus(); return; }
+  const role = document.getElementById('fRole').value.trim();
+  const join = document.getElementById('fJoin').value || todayISO();
+  if (editingEmployeeId){
+    const emp = state.employees.find(e=>e.id===editingEmployeeId);
+    emp.name = name; emp.role = role; emp.joinDate = join;
+    renderDetail();
+  } else {
+    const emp = newEmployee(name, role, join);
+    state.employees.push(emp);
+  }
+  empDialog.close();
+  renderDashboard();
+});
+
+/* ================= Delete confirm ================= */
+const confirmDialog = document.getElementById('confirmDialog');
+document.getElementById('btnDeleteEmployee').addEventListener('click', ()=> confirmDialog.showModal());
+document.getElementById('confirmCancel').addEventListener('click', ()=> confirmDialog.close());
+document.getElementById('confirmOk').addEventListener('click', ()=>{
+  state.employees = state.employees.filter(e=>e.id!==currentEmployeeId);
+  confirmDialog.close();
+  backToDashboard();
+});
+
+/* ================= Export / Import (file-based, no browser storage) ================= */
+document.getElementById('btnExport').addEventListener('click', ()=>{
+  const payload = { exportedAt: new Date().toISOString(), state };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `新人培訓紀錄_${todayISO()}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+document.getElementById('btnImport').addEventListener('click', ()=> document.getElementById('fileImport').click());
+
+const importDialog = document.getElementById('importDialog');
+let pendingImport = null;
+
+document.getElementById('fileImport').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const payload = JSON.parse(reader.result);
+      const incoming = payload.state || payload;
+      if (!incoming || !Array.isArray(incoming.employees)) throw new Error('格式不正確');
+      if (state.employees.length === 0){
+        state = incoming;
+        idCounter += 1000;
+        backToDashboard();
+      } else {
+        pendingImport = incoming;
+        document.getElementById('importCurrentCount').textContent = state.employees.length;
+        document.getElementById('importIncomingCount').textContent = incoming.employees.length;
+        importDialog.showModal();
+      }
+    } catch(err){
+      alert('匯入失敗：檔案格式不正確或已損毀。');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('importCancel').addEventListener('click', ()=>{
+  pendingImport = null;
+  importDialog.close();
+});
+document.getElementById('importReplace').addEventListener('click', ()=>{
+  if (!pendingImport) return;
+  state = pendingImport;
+  idCounter += 1000;
+  pendingImport = null;
+  importDialog.close();
+  backToDashboard();
+});
+document.getElementById('importMerge').addEventListener('click', ()=>{
+  if (!pendingImport) return;
+  const existingIds = new Set(state.employees.map(e=>e.id));
+  pendingImport.employees.forEach(emp=>{
+    if (existingIds.has(emp.id)) emp.id = uid('emp');
+    state.employees.push(emp);
+  });
+  pendingImport = null;
+  importDialog.close();
+  backToDashboard();
+});
+
+/* ================= Wire top-level nav ================= */
+document.getElementById('btnAddEmployee').addEventListener('click', openAddDialog);
+document.getElementById('btnEditEmployee').addEventListener('click', openEditDialog);
+document.getElementById('btnBack').addEventListener('click', backToDashboard);
+document.getElementById('btnPrint').addEventListener('click', ()=> window.print());
+document.getElementById('searchInput').addEventListener('input', renderDashboard);
+document.getElementById('sortSelect').addEventListener('change', renderDashboard);
+document.getElementById('milestoneDate').addEventListener('change', (e)=>{
+  const emp = state.employees.find(e=>e.id===currentEmployeeId);
+  if (emp) emp.milestoneDate = e.target.value;
+});
+
+/* ================= Init ================= */
+renderDashboard();
+
+})();
+</script>
+</body>
+</html>
