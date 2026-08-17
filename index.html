@@ -625,7 +625,9 @@ const TRAINING_STRUCTURE = [
         {id:'s1c8', label:'推銷職能認證'},
       ]},
       {id:'operation', name:'操作', icon:'🎯', items:[
-        {id:'s1o1', label:'達成業績20B'},
+        {id:'s1o1', label:'達成業績20B（晉升業務襄理）'},
+        {id:'s1o2', label:'達成業績40B（晉升業務副理）', stageRequired:false, milestoneRequired:false},
+        {id:'s1o3', label:'達成業績80B（達成區經理晉升資格）', stageRequired:false, milestoneRequired:false},
       ]},
       {id:'license', name:'證照', icon:'📜', items:[
         {id:'s1l1', label:'通過公會考試'},
@@ -818,7 +820,7 @@ async function patchItemRecord(empId, itemId, field, value){
 
 /* ================= Progress calculations ================= */
 function stageProgress(emp, stage){
-  const items = stage.categories.flatMap(c=>c.items);
+  const items = stage.categories.flatMap(c=>c.items).filter(it => it.stageRequired !== false);
   const done = items.filter(it => emp.records && emp.records[it.id] && emp.records[it.id].status === 'done').length;
   return { done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 0 };
 }
@@ -1015,7 +1017,7 @@ function renderDetail(){
             <button type="button" data-s="inprogress" ${readOnly?'disabled':''} class="${rec.status==='inprogress'?'active':''}">進行中</button>
             <button type="button" data-s="done" ${readOnly?'disabled':''} class="${rec.status==='done'?'active':''}">已完成</button>
           </div>
-          <div class="item-label">${escapeHtml(it.label)}${it.milestoneRequired===false ? '<span class="optional-tag">不列入晉升門檻</span>' : ''}</div>
+          <div class="item-label">${escapeHtml(it.label)}${it.stageRequired===false ? '<span class="optional-tag">不計入階段/晉升門檻・額外記錄</span>' : (it.milestoneRequired===false ? '<span class="optional-tag">不列入晉升門檻</span>' : '')}</div>
           <input type="date" class="item-date" data-item="${it.id}" data-field="date" value="${rec.date||''}" ${(rec.status==='pending'||readOnly)?'disabled':''} title="完成/開始日期">
           <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${(rec.status==='pending'||readOnly)?'disabled':''}>
         `;
