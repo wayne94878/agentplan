@@ -178,6 +178,7 @@
   .emp-name{ font-size:15px; font-weight:700; }
   .emp-meta{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
   .owner-tag{ font-size:10.5px; color:#184f95; background:var(--stage1-wash); padding:2px 7px; border-radius:999px; display:inline-block; margin-top:4px; }
+  .optional-tag{ font-size:10px; color:var(--text-muted); background:var(--muted-pill); padding:2px 7px; border-radius:999px; display:inline-block; margin-left:6px; font-weight:600; white-space:nowrap; }
   .stage-pill{
     display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px;
     border-radius:999px; margin-top:6px;
@@ -514,6 +515,7 @@ firebaseConfig 與 ADMIN_EMAILS，換成你自己 Firebase 專案的設定值。
       <div class="milestone-trophy">🏆</div>
       <div class="milestone-title" id="milestoneTitle">達成晉升主管資格</div>
       <div class="milestone-sub" id="milestoneSub">完成新人階段與業務員階段所有課程、操作與證照後，即可解鎖晉升主管資格。</div>
+      <div style="font-size:11px; color:var(--text-muted); margin:-8px 0 14px;">※「引進3位新人力」仍會記錄，但不計入晉升門檻</div>
       <div class="milestone-date-row" id="milestoneDateRow" style="display:none;">
         <label for="milestoneDate">達成日期：</label>
         <input type="date" id="milestoneDate">
@@ -641,7 +643,7 @@ const TRAINING_STRUCTURE = [
         {id:'s2c4', label:'培訓SOP的運用'},
       ]},
       {id:'operation', name:'操作', icon:'🎯', items:[
-        {id:'s2o1', label:'引進3位新人力'},
+        {id:'s2o1', label:'引進3位新人力', milestoneRequired:false},
       ]},
       {id:'license', name:'證照', icon:'📜', items:[
         {id:'s2l1', label:'外幣證照考試'},
@@ -825,7 +827,9 @@ function overallProgress(emp){
   return { done, total: TOTAL_ITEMS, pct: Math.round(done/TOTAL_ITEMS*100) };
 }
 function isStageComplete(emp, stage){ const p = stageProgress(emp, stage); return p.total>0 && p.done === p.total; }
-function isMilestoneUnlocked(emp){ return TRAINING_STRUCTURE.every(st => isStageComplete(emp, st)); }
+function isMilestoneUnlocked(emp){
+  return ALL_ITEMS.every(it => it.milestoneRequired === false || (emp.records && emp.records[it.id] && emp.records[it.id].status === 'done'));
+}
 function currentStageLabel(emp){
   if (isMilestoneUnlocked(emp)) return { text:'已晉升主管資格', cls:'done' };
   for (let i = TRAINING_STRUCTURE.length-1; i>=0; i--){
@@ -1011,7 +1015,7 @@ function renderDetail(){
             <button type="button" data-s="inprogress" ${readOnly?'disabled':''} class="${rec.status==='inprogress'?'active':''}">進行中</button>
             <button type="button" data-s="done" ${readOnly?'disabled':''} class="${rec.status==='done'?'active':''}">已完成</button>
           </div>
-          <div class="item-label">${escapeHtml(it.label)}</div>
+          <div class="item-label">${escapeHtml(it.label)}${it.milestoneRequired===false ? '<span class="optional-tag">不列入晉升門檻</span>' : ''}</div>
           <input type="date" class="item-date" data-item="${it.id}" data-field="date" value="${rec.date||''}" ${(rec.status==='pending'||readOnly)?'disabled':''} title="完成/開始日期">
           <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${(rec.status==='pending'||readOnly)?'disabled':''}>
         `;
