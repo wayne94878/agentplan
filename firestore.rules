@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // 可以看到「全團隊」總覽的主管 email，請跟 index.html 裡 ADMIN_EMAILS 保持一致
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email in [
+        'dan19881018@gmail.com'
+      ];
+    }
+
+    match /employees/{empId} {
+      // 讀取：本人的資料，或是主管（可讀全部人的資料）
+      allow read: if isSignedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+
+      // 新增：只能新增「自己名下」的紀錄（ownerUid 必須等於自己的 uid，避免冒名新增）
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+
+      // 修改／刪除：只有本人可以動自己的紀錄（主管只能看，不能改夥伴的紀錄）
+      allow update, delete: if isSignedIn() && resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}

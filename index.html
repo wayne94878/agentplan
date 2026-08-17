@@ -62,6 +62,39 @@
   a,button,input,select{ font-family:inherit; }
   button{ cursor:pointer; }
 
+  /* ---------- Centered screens (loading / setup / login) ---------- */
+  .center-screen{
+    position:relative; z-index:1; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .center-card{
+    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-pop); padding:36px 32px; max-width:420px; width:100%; text-align:center;
+  }
+  .center-card .mark{
+    width:64px; height:64px; border-radius:18px; margin:0 auto 16px;
+    background: linear-gradient(145deg, var(--stage1), #1c5cab);
+    display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:var(--shadow-card);
+  }
+  .center-card h2{ margin:0 0 8px; font-size:19px; }
+  .center-card p{ margin:0 0 20px; font-size:13.5px; color:var(--text-secondary); line-height:1.6; }
+  .google-btn{
+    display:inline-flex; align-items:center; gap:10px; justify-content:center; width:100%;
+    background:#fff; border:1px solid var(--border-strong); border-radius:999px; padding:11px 18px;
+    font-size:14px; font-weight:600; color:var(--text-primary); transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .google-btn:hover{ box-shadow:var(--shadow-card); transform:translateY(-1px); }
+  .google-btn svg{ width:18px; height:18px; }
+  .setup-code{
+    text-align:left; background:var(--page); border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:11.5px; color:var(--text-secondary); margin:0 0 16px; font-family:ui-monospace,Consolas,monospace;
+    white-space:pre-wrap; word-break:break-all;
+  }
+  .spinner{
+    width:34px; height:34px; border-radius:50%; border:3px solid var(--stage1-track); border-top-color:var(--stage1);
+    margin:0 auto 14px; animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
   /* ---------- Top bar ---------- */
   .topbar{
     display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
@@ -77,7 +110,7 @@
   .brand h1{ margin:0; font-size:20px; letter-spacing:.02em; }
   .brand p{ margin:2px 0 0; font-size:13px; color:var(--text-secondary); }
 
-  .top-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .top-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
   .btn{
     border:1px solid var(--border-strong); background:var(--card); color:var(--text-primary);
     padding:9px 14px; border-radius:999px; font-size:13px; font-weight:600;
@@ -85,12 +118,29 @@
   }
   .btn:hover{ box-shadow:var(--shadow-card); transform:translateY(-1px); }
   .btn:active{ transform:translateY(0); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
   .btn-primary{ background:linear-gradient(145deg, var(--stage1), #1c5cab); color:#fff; border-color:transparent; }
   .btn-gold{ background:linear-gradient(145deg, var(--gold), #c98500); color:#fff; border-color:transparent; }
   .btn-ghost{ background:transparent; }
   .btn-sm{ padding:6px 11px; font-size:12px; }
   .btn-danger{ color:#a3312f; border-color:rgba(163,49,47,0.3); background:#fdf3f2; }
   .helper-note{ font-size:11px; color:var(--text-muted); width:100%; text-align:right; margin-top:4px;}
+
+  .user-row{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:flex-end; }
+  .user-chip{ display:flex; align-items:center; gap:8px; }
+  .user-chip img{ width:30px; height:30px; border-radius:50%; }
+  .user-chip .init{
+    width:30px; height:30px; border-radius:50%; background:var(--stage1); color:#fff; font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .user-chip .name{ font-size:12.5px; font-weight:600; line-height:1.2; }
+  .user-chip .role-tag{ font-size:10px; color:var(--text-muted); }
+
+  .scope-toggle{ display:inline-flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden; }
+  .scope-toggle button{
+    border:none; background:var(--card); font-size:12px; padding:7px 12px; color:var(--text-secondary); font-weight:600;
+  }
+  .scope-toggle button.active{ background:var(--stage1); color:#fff; }
 
   /* ---------- Stat tiles ---------- */
   .stats-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px; }
@@ -127,6 +177,7 @@
   }
   .emp-name{ font-size:15px; font-weight:700; }
   .emp-meta{ font-size:11.5px; color:var(--text-muted); margin-top:1px; }
+  .owner-tag{ font-size:10.5px; color:#184f95; background:var(--stage1-wash); padding:2px 7px; border-radius:999px; display:inline-block; margin-top:4px; }
   .stage-pill{
     display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px;
     border-radius:999px; margin-top:6px;
@@ -223,6 +274,7 @@
   .status-toggle button.active[data-s="pending"]{ background:var(--muted-pill); color:var(--text-primary); }
   .status-toggle button.active[data-s="inprogress"]{ background:var(--warning-wash); color:#8a5a00; }
   .status-toggle button.active[data-s="done"]{ background:var(--good-wash); color:#0d6b49; }
+  .status-toggle button:disabled{ opacity:.6; cursor:not-allowed; }
   .item-date{ width:128px; border:1px solid var(--border-strong); border-radius:8px; padding:6px 8px; font-size:12px; }
   .item-mentor{ width:96px; border:1px solid var(--border-strong); border-radius:8px; padding:6px 8px; font-size:12px; }
   .item-date:disabled, .item-mentor:disabled{ background:var(--page); color:var(--text-muted); }
@@ -259,6 +311,11 @@
 
   footer.print-tools{ display:flex; justify-content:flex-end; margin-top:16px; }
 
+  .readonly-banner{
+    background:var(--muted-pill); border:1px solid var(--border-strong); border-radius:var(--radius-md);
+    padding:10px 16px; font-size:12.5px; color:var(--text-secondary); margin-bottom:18px; display:flex; gap:8px; align-items:center;
+  }
+
   /* ---------- Dialogs ---------- */
   dialog{
     border:none; border-radius:var(--radius-lg); padding:0; box-shadow:var(--shadow-pop);
@@ -294,6 +351,43 @@
 </style>
 </head>
 <body class="app">
+
+<!-- ============ Loading screen ============ -->
+<div class="center-screen" id="loadingScreen">
+  <div class="center-card">
+    <div class="spinner"></div>
+    <h2>載入中…</h2>
+    <p>正在連接雲端資料庫</p>
+  </div>
+</div>
+
+<!-- ============ Setup-needed screen (shown if firebaseConfig not filled in) ============ -->
+<div class="center-screen" id="setupNeededScreen" style="display:none;">
+  <div class="center-card" style="max-width:520px; text-align:left;">
+    <div class="mark" style="margin:0 0 16px;">⚙️</div>
+    <h2 style="text-align:center;">還沒完成雲端設定</h2>
+    <p style="text-align:center;">這個版本需要連接 Firebase 才能讓每位夥伴用自己的帳號登入、各自記錄資料。</p>
+    <div class="setup-code">請打開這個檔案，找到 &lt;script type="module"&gt; 區塊最上方的
+firebaseConfig 與 ADMIN_EMAILS，換成你自己 Firebase 專案的設定值。
+詳細步驟請看隨附的 README_雲端版.md。</div>
+  </div>
+</div>
+
+<!-- ============ Login screen ============ -->
+<div class="center-screen" id="loginScreen" style="display:none;">
+  <div class="center-card">
+    <div class="mark">🌱</div>
+    <h2>北十勝揚・新人培訓紀錄表</h2>
+    <p>請用你的 Google 帳號登入，開始記錄你負責新人的培訓進度。每個人只會看到自己建立的紀錄。</p>
+    <button class="google-btn" id="btnGoogleLogin">
+      <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.2-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.5 0-14 4.2-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.1-5.1l-6.5-5.5C29.5 35.1 26.9 36 24 36c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.9 39.7 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.5 5.5C41.4 36 44 30.6 44 24c0-1.2-.1-2.4-.4-3.5z"/></svg>
+      使用 Google 帳號登入
+    </button>
+  </div>
+</div>
+
+<!-- ============ App root (shown after sign-in) ============ -->
+<div id="appRoot" style="display:none;">
 <div class="wrap">
 
   <div class="topbar no-print">
@@ -304,14 +398,29 @@
         <p>組織發展主管專用｜新人養成追蹤系統</p>
       </div>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:flex-end;">
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+      <div class="user-row">
+        <div class="user-chip">
+          <img id="userAvatarImg" style="display:none;" alt="">
+          <div id="userAvatarInit" class="init" style="display:none;"></div>
+          <div>
+            <div class="name" id="userName">—</div>
+            <div class="role-tag" id="userRoleTag"></div>
+          </div>
+        </div>
+        <div class="scope-toggle no-print" id="scopeToggle" style="display:none;">
+          <button type="button" data-scope="mine" class="active">只看我的</button>
+          <button type="button" data-scope="team">全團隊</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btnLogout">登出</button>
+      </div>
       <div class="top-actions">
-        <button class="btn btn-ghost btn-sm" id="btnImport">📥 匯入備份</button>
-        <button class="btn btn-ghost btn-sm" id="btnExport">💾 匯出備份</button>
+        <button class="btn btn-ghost btn-sm" id="btnImport">📥 匯入舊資料</button>
+        <button class="btn btn-ghost btn-sm" id="btnExport">📄 匯出報表</button>
         <button class="btn btn-primary" id="btnAddEmployee">＋ 新增新人</button>
         <input type="file" id="fileImport" accept="application/json" style="display:none">
       </div>
-      <div class="helper-note">資料僅保存在本頁瀏覽期間，請定期「匯出備份」保存 JSON 檔</div>
+      <div class="helper-note">✅ 資料已自動同步到雲端，不需要手動保存</div>
     </div>
   </div>
 
@@ -320,7 +429,7 @@
 
     <div class="stats-row">
       <div class="stat-tile">
-        <div class="label">團隊新人總數</div>
+        <div class="label" id="statTotalLabel">新人總數</div>
         <div class="value" id="statTotal">0<small>位</small></div>
       </div>
       <div class="stat-tile">
@@ -361,7 +470,8 @@
   <div class="view" id="viewDetail">
     <button class="btn btn-ghost back-btn no-print" id="btnBack">← 返回總覽</button>
 
-    <div class="banner no-print">💡 每完成一項訓練，記得填寫完成日期與帶訓主管，見證夥伴一步步成長。</div>
+    <div class="banner no-print" id="tipBanner">💡 每完成一項訓練，記得填寫完成日期與帶訓主管，見證夥伴一步步成長。</div>
+    <div class="readonly-banner no-print" id="readonlyBanner" style="display:none;">🔒 唯讀模式——這是 <span id="readonlyOwnerName"></span> 建立的新人紀錄，只有本人能編輯。</div>
 
     <div class="emp-header">
       <div class="avatar" id="detAvatar" style="width:66px;height:66px;font-size:22px;">王</div>
@@ -416,6 +526,7 @@
   </div>
 
 </div>
+</div>
 
 <!-- Add / Edit employee dialog -->
 <dialog id="empDialog">
@@ -444,7 +555,7 @@
 <dialog id="confirmDialog">
   <div class="dialog-inner">
     <h3>確定要刪除這位新人的紀錄嗎？</h3>
-    <p style="font-size:13px; color:var(--text-secondary);">此動作無法復原，建議刪除前先匯出備份。</p>
+    <p style="font-size:13px; color:var(--text-secondary);">此動作無法復原，建議刪除前先匯出報表。</p>
     <div class="dialog-actions">
       <button class="btn btn-ghost" id="confirmCancel">取消</button>
       <button class="btn btn-danger" id="confirmOk">確定刪除</button>
@@ -452,28 +563,48 @@
   </div>
 </dialog>
 
-<!-- Import mode dialog (merge vs replace) -->
+<!-- Import confirm dialog -->
 <dialog id="importDialog">
   <div class="dialog-inner">
-    <h3>如何匯入這份備份？</h3>
+    <h3>匯入舊的備份檔？</h3>
     <p style="font-size:13px; color:var(--text-secondary);">
-      目前畫面上有 <b id="importCurrentCount">0</b> 位新人，匯入的檔案內有 <b id="importIncomingCount">0</b> 位。
-      如果是夥伴傳來的紀錄，建議選「合併加入」，把兩邊的新人都保留下來。
+      這個檔案裡有 <b id="importIncomingCount">0</b> 位新人紀錄，會以「<b id="importAsUser"></b>」的身分新增到雲端資料庫。
     </p>
-    <div class="dialog-actions" style="justify-content:space-between; flex-wrap:wrap; gap:8px;">
+    <div class="dialog-actions">
       <button class="btn btn-ghost" id="importCancel">取消</button>
-      <div style="display:flex; gap:8px;">
-        <button class="btn" id="importReplace">取代目前資料</button>
-        <button class="btn btn-primary" id="importMerge">合併加入</button>
-      </div>
+      <button class="btn btn-primary" id="importConfirm">確定匯入</button>
     </div>
   </div>
 </dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.3/confetti.browser.min.js"></script>
-<script>
-(function(){
-"use strict";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, addDoc, updateDoc, deleteDoc,
+  onSnapshot, query, where, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ======================================================================
+   ⚙️ 設定區 — 請依照 README_雲端版.md 的步驟，換成你自己 Firebase 專案的值。
+   這些值本身不是密碼，可以放心寫在網頁裡；真正的存取控管是靠 Firestore
+   安全規則（另外設定），不是靠隱藏這些設定值。
+   ====================================================================== */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// 可以看到「全團隊」總覽的主管 Google 帳號 email，可自行增加多筆
+const ADMIN_EMAILS = ["dan19881018@gmail.com"];
+
+const CONFIG_READY = !!(firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY");
 
 /* ================= Training structure (from 壽險事業培訓表) ================= */
 const TRAINING_STRUCTURE = [
@@ -548,37 +679,149 @@ const TOTAL_ITEMS = ALL_ITEMS.length;
 
 const AVATAR_COLORS = ['#2a78d6','#1baf7a','#eda100','#4a3aa7','#e87ba4','#eb6834'];
 
-/* ================= State (in-memory only — no localStorage) ================= */
-let state = { employees: [] };
-let currentEmployeeId = null;
-let idCounter = 1;
-
-function uid(prefix){ return prefix + '_' + (idCounter++) + '_' + Math.random().toString(36).slice(2,7); }
-
-function newEmployee(name, role, joinDate){
-  const emp = {
-    id: uid('emp'),
-    name: name || '未命名',
-    role: role || '',
-    joinDate: joinDate || todayISO(),
-    colorIdx: state.employees.length % AVATAR_COLORS.length,
-    milestoneDate: '',
-    records: {}
-  };
-  ALL_ITEMS.forEach(it => { emp.records[it.id] = { status:'pending', date:'', mentor:'' }; });
-  return emp;
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function emptyRecords(){
+  const r = {};
+  ALL_ITEMS.forEach(it => { r[it.id] = { status:'pending', date:'', mentor:'' }; });
+  return r;
 }
 
-function todayISO(){ return new Date().toISOString().slice(0,10); }
+/* ================= Firebase init ================= */
+let app, auth, db;
+let currentUser = null;
+let isAdmin = false;
+let scopeMode = 'mine'; // 'mine' | 'team'
+let employees = [];
+let unsubscribeSnapshot = null;
+let currentEmployeeId = null;
+let lastRenderedEmpId = null;
+let prevUnlocked = { stage1:false, stage2:false, milestone:false };
+
+function showScreen(id){
+  ['loadingScreen','setupNeededScreen','loginScreen'].forEach(s=>{
+    document.getElementById(s).style.display = (s===id) ? 'flex' : 'none';
+  });
+  document.getElementById('appRoot').style.display = (id==='app') ? 'block' : 'none';
+}
+
+if (!CONFIG_READY){
+  showScreen('setupNeededScreen');
+} else {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+
+  document.getElementById('btnGoogleLogin').addEventListener('click', async ()=>{
+    try{
+      await signInWithPopup(auth, new GoogleAuthProvider());
+    }catch(err){
+      alert('登入失敗：' + (err && err.message ? err.message : err));
+    }
+  });
+  document.getElementById('btnLogout').addEventListener('click', ()=>{
+    unsubscribeEmployees();
+    signOut(auth);
+  });
+
+  onAuthStateChanged(auth, (user)=>{
+    if (user){
+      currentUser = user;
+      isAdmin = ADMIN_EMAILS.includes(user.email);
+      renderUserChip();
+      showScreen('app');
+      subscribeEmployees();
+    } else {
+      currentUser = null;
+      unsubscribeEmployees();
+      showScreen('loginScreen');
+    }
+  });
+}
+
+function renderUserChip(){
+  const img = document.getElementById('userAvatarImg');
+  const init = document.getElementById('userAvatarInit');
+  if (currentUser.photoURL){
+    img.src = currentUser.photoURL; img.style.display='block'; init.style.display='none';
+  } else {
+    init.textContent = (currentUser.displayName||currentUser.email||'?').slice(0,1);
+    init.style.display='flex'; img.style.display='none';
+  }
+  document.getElementById('userName').textContent = currentUser.displayName || currentUser.email;
+  document.getElementById('userRoleTag').textContent = isAdmin ? '主管帳號' : '';
+  document.getElementById('scopeToggle').style.display = isAdmin ? 'inline-flex' : 'none';
+}
+
+/* ================= Firestore subscription ================= */
+function unsubscribeEmployees(){
+  if (unsubscribeSnapshot){ unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+  employees = [];
+}
+
+function subscribeEmployees(){
+  if (unsubscribeSnapshot) unsubscribeSnapshot();
+  const col = collection(db, 'employees');
+  const q = (isAdmin && scopeMode === 'team')
+    ? query(col)
+    : query(col, where('ownerUid', '==', currentUser.uid));
+  unsubscribeSnapshot = onSnapshot(q, (snap)=>{
+    employees = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    renderDashboard();
+    if (currentEmployeeId) renderDetail();
+  }, (err)=>{
+    console.error(err);
+    alert('讀取資料時發生錯誤：' + err.message);
+  });
+}
+
+document.getElementById('scopeToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-scope]');
+  if (!btn) return;
+  scopeMode = btn.getAttribute('data-scope');
+  document.querySelectorAll('#scopeToggle button').forEach(b=>b.classList.toggle('active', b===btn));
+  document.getElementById('statTotalLabel').textContent = scopeMode==='team' ? '全團隊新人總數' : '新人總數';
+  backToDashboard();
+  subscribeEmployees();
+});
+
+/* ================= Firestore CRUD ================= */
+async function createEmployee(name, role, joinDate){
+  await addDoc(collection(db, 'employees'), {
+    ownerUid: currentUser.uid,
+    ownerName: currentUser.displayName || currentUser.email,
+    ownerEmail: currentUser.email,
+    name, role, joinDate,
+    colorIdx: Math.floor(Math.random()*AVATAR_COLORS.length),
+    milestoneDate: '',
+    records: emptyRecords(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+}
+async function patchEmployee(id, patch){
+  await updateDoc(doc(db, 'employees', id), { ...patch, updatedAt: serverTimestamp() });
+}
+async function removeEmployee(id){
+  await deleteDoc(doc(db, 'employees', id));
+}
+async function patchItemRecord(empId, itemId, field, value){
+  await updateDoc(doc(db, 'employees', empId), {
+    [`records.${itemId}.${field}`]: value,
+    updatedAt: serverTimestamp(),
+  });
+}
 
 /* ================= Progress calculations ================= */
 function stageProgress(emp, stage){
   const items = stage.categories.flatMap(c=>c.items);
-  const done = items.filter(it => emp.records[it.id] && emp.records[it.id].status === 'done').length;
+  const done = items.filter(it => emp.records && emp.records[it.id] && emp.records[it.id].status === 'done').length;
   return { done, total: items.length, pct: items.length ? Math.round(done/items.length*100) : 0 };
 }
 function overallProgress(emp){
-  const done = ALL_ITEMS.filter(it => emp.records[it.id] && emp.records[it.id].status === 'done').length;
+  const done = ALL_ITEMS.filter(it => emp.records && emp.records[it.id] && emp.records[it.id].status === 'done').length;
   return { done, total: TOTAL_ITEMS, pct: Math.round(done/TOTAL_ITEMS*100) };
 }
 function isStageComplete(emp, stage){ const p = stageProgress(emp, stage); return p.total>0 && p.done === p.total; }
@@ -588,20 +831,18 @@ function currentStageLabel(emp){
   for (let i = TRAINING_STRUCTURE.length-1; i>=0; i--){
     const st = TRAINING_STRUCTURE[i];
     const p = stageProgress(emp, st);
-    if (p.done > 0 || i===0) return { text: st.name, cls: 'stage-pill ' + (st.id==='stage1'?'s1':'s2') };
+    if (p.done > 0 || i===0) return { text: st.name, cls: st.id==='stage1'?'s1':'s2' };
   }
   return { text:'新人階段', cls:'s1' };
 }
 
 /* ================= Rendering: dashboard ================= */
 function ringCircumference(r){ return 2*Math.PI*r; }
-
 function renderRing(svgFillEl, pct, r){
   const c = ringCircumference(r);
   svgFillEl.setAttribute('stroke-dasharray', c.toFixed(1));
   svgFillEl.setAttribute('stroke-dashoffset', (c*(1-pct/100)).toFixed(1));
 }
-
 function fmtDate(d){
   if(!d) return '';
   const dt = new Date(d+'T00:00:00');
@@ -610,7 +851,7 @@ function fmtDate(d){
 }
 
 function renderDashboard(){
-  const emps = state.employees;
+  const emps = employees;
   document.getElementById('statTotal').innerHTML = emps.length + '<small>位</small>';
   const avg = emps.length ? Math.round(emps.reduce((s,e)=>s+overallProgress(e).pct,0)/emps.length) : 0;
   document.getElementById('statAvg').innerHTML = avg + '<small>%</small>';
@@ -641,6 +882,7 @@ function renderDashboard(){
     const p = overallProgress(emp);
     const ms = isMilestoneUnlocked(emp);
     const stageInfo = currentStageLabel(emp);
+    const isMine = emp.ownerUid === currentUser.uid;
     const card = document.createElement('button');
     card.className = 'emp-card' + (ms ? ' done-milestone' : '');
     card.style.textAlign='left';
@@ -649,11 +891,12 @@ function renderDashboard(){
     card.innerHTML = `
       <div class="trophy-flag ${ms?'lit':''}">🏆</div>
       <div class="emp-top">
-        <div class="avatar" style="background:${AVATAR_COLORS[emp.colorIdx % AVATAR_COLORS.length]}">${emp.name.slice(0,1)}</div>
+        <div class="avatar" style="background:${AVATAR_COLORS[(emp.colorIdx||0) % AVATAR_COLORS.length]}">${emp.name.slice(0,1)}</div>
         <div>
           <div class="emp-name">${escapeHtml(emp.name)}</div>
           <div class="emp-meta">${escapeHtml(emp.role||'—')} · 加入 ${fmtDate(emp.joinDate)}</div>
-          <span class="stage-pill ${stageInfo.cls.includes('done')?'done':(stageInfo.cls.includes('s2')?'s2':'s1')}">${stageInfo.text}</span>
+          <span class="stage-pill ${stageInfo.cls==='done'?'done':(stageInfo.cls==='s2'?'s2':'s1')}">${stageInfo.text}</span>
+          ${isMine ? '' : `<span class="owner-tag">由 ${escapeHtml(emp.ownerName||emp.ownerEmail||'夥伴')} 建立</span>`}
         </div>
       </div>
       <div class="emp-body">
@@ -673,13 +916,10 @@ function renderDashboard(){
   });
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
 /* ================= Rendering: detail ================= */
 function openDetail(id){
   currentEmployeeId = id;
+  lastRenderedEmpId = null; // force "just opened" suppression of confetti on this first render
   document.getElementById('viewDashboard').classList.remove('active');
   document.getElementById('viewDetail').classList.add('active');
   renderDetail();
@@ -687,23 +927,31 @@ function openDetail(id){
 }
 function backToDashboard(){
   currentEmployeeId = null;
+  lastRenderedEmpId = null;
   document.getElementById('viewDetail').classList.remove('active');
   document.getElementById('viewDashboard').classList.add('active');
   renderDashboard();
 }
 
-let prevUnlocked = { stage1:false, stage2:false, milestone:false };
-
 function renderDetail(){
-  const emp = state.employees.find(e=>e.id===currentEmployeeId);
+  const emp = employees.find(e=>e.id===currentEmployeeId);
   if (!emp){ backToDashboard(); return; }
 
+  const readOnly = emp.ownerUid !== currentUser.uid;
+  const justOpened = lastRenderedEmpId !== emp.id;
+
+  document.getElementById('tipBanner').style.display = readOnly ? 'none' : 'flex';
+  document.getElementById('readonlyBanner').style.display = readOnly ? 'flex' : 'none';
+  if (readOnly) document.getElementById('readonlyOwnerName').textContent = emp.ownerName || emp.ownerEmail || '夥伴';
+  document.getElementById('btnEditEmployee').style.display = readOnly ? 'none' : 'inline-flex';
+  document.getElementById('btnDeleteEmployee').style.display = readOnly ? 'none' : 'inline-flex';
+
   document.getElementById('detAvatar').textContent = emp.name.slice(0,1);
-  document.getElementById('detAvatar').style.background = AVATAR_COLORS[emp.colorIdx % AVATAR_COLORS.length];
+  document.getElementById('detAvatar').style.background = AVATAR_COLORS[(emp.colorIdx||0) % AVATAR_COLORS.length];
   document.getElementById('detName').textContent = emp.name;
   document.getElementById('detMeta').textContent = `${emp.role||'—'} · 加入日期 ${fmtDate(emp.joinDate)}`;
   const stageInfo = currentStageLabel(emp);
-  document.getElementById('detStagePill').innerHTML = `<span class="stage-pill ${stageInfo.cls.includes('done')?'done':(stageInfo.cls.includes('s2')?'s2':'s1')}">${stageInfo.text}</span>`;
+  document.getElementById('detStagePill').innerHTML = `<span class="stage-pill ${stageInfo.cls==='done'?'done':(stageInfo.cls==='s2'?'s2':'s1')}">${stageInfo.text}</span>`;
 
   const overall = overallProgress(emp);
   document.getElementById('detRingPct').textContent = overall.pct + '%';
@@ -715,17 +963,18 @@ function renderDetail(){
   const s2complete = isStageComplete(emp, TRAINING_STRUCTURE[1]);
   const msUnlocked = isMilestoneUnlocked(emp);
 
-  const b1 = document.getElementById('badgeStage1'); b1.classList.toggle('unlocked', s1complete);
-  const b2 = document.getElementById('badgeStage2'); b2.classList.toggle('unlocked', s2complete);
-  const b3 = document.getElementById('badgeMilestone'); b3.classList.toggle('unlocked', msUnlocked);
+  document.getElementById('badgeStage1').classList.toggle('unlocked', s1complete);
+  document.getElementById('badgeStage2').classList.toggle('unlocked', s2complete);
+  document.getElementById('badgeMilestone').classList.toggle('unlocked', msUnlocked);
 
-  // Confetti on fresh unlock transitions
-  if (s1complete && !prevUnlocked.stage1) burstConfetti('#2a78d6');
-  if (s2complete && !prevUnlocked.stage2) burstConfetti('#1baf7a');
-  if (msUnlocked && !prevUnlocked.milestone) burstConfetti('#eda100', true);
+  if (!justOpened){
+    if (s1complete && !prevUnlocked.stage1) burstConfetti('#2a78d6');
+    if (s2complete && !prevUnlocked.stage2) burstConfetti('#1baf7a');
+    if (msUnlocked && !prevUnlocked.milestone) burstConfetti('#eda100', true);
+  }
   prevUnlocked = { stage1:s1complete, stage2:s2complete, milestone:msUnlocked };
+  lastRenderedEmpId = emp.id;
 
-  // Stage sections
   const container = document.getElementById('stageContainer');
   container.innerHTML = '';
   TRAINING_STRUCTURE.forEach(stage => {
@@ -753,18 +1002,18 @@ function renderDetail(){
       block.className = 'category-block';
       block.innerHTML = `<div class="category-title"><span>${cat.icon}</span><span>${cat.name}</span></div>`;
       cat.items.forEach(it => {
-        const rec = emp.records[it.id] || {status:'pending', date:'', mentor:''};
+        const rec = (emp.records && emp.records[it.id]) || {status:'pending', date:'', mentor:''};
         const row = document.createElement('div');
         row.className = 'item-row';
         row.innerHTML = `
           <div class="status-toggle" data-item="${it.id}">
-            <button type="button" data-s="pending" class="${rec.status==='pending'?'active':''}">未開始</button>
-            <button type="button" data-s="inprogress" class="${rec.status==='inprogress'?'active':''}">進行中</button>
-            <button type="button" data-s="done" class="${rec.status==='done'?'active':''}">已完成</button>
+            <button type="button" data-s="pending" ${readOnly?'disabled':''} class="${rec.status==='pending'?'active':''}">未開始</button>
+            <button type="button" data-s="inprogress" ${readOnly?'disabled':''} class="${rec.status==='inprogress'?'active':''}">進行中</button>
+            <button type="button" data-s="done" ${readOnly?'disabled':''} class="${rec.status==='done'?'active':''}">已完成</button>
           </div>
           <div class="item-label">${escapeHtml(it.label)}</div>
-          <input type="date" class="item-date" data-item="${it.id}" data-field="date" value="${rec.date||''}" ${rec.status==='pending'?'disabled':''} title="完成/開始日期">
-          <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${rec.status==='pending'?'disabled':''}>
+          <input type="date" class="item-date" data-item="${it.id}" data-field="date" value="${rec.date||''}" ${(rec.status==='pending'||readOnly)?'disabled':''} title="完成/開始日期">
+          <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${(rec.status==='pending'||readOnly)?'disabled':''}>
         `;
         block.appendChild(row);
         if (COURSE_NOTES[it.id]){
@@ -783,7 +1032,6 @@ function renderDetail(){
     container.appendChild(section);
   });
 
-  // Milestone card
   const mCard = document.getElementById('milestoneCard');
   mCard.classList.toggle('unlocked', msUnlocked);
   document.getElementById('milestoneSub').textContent = msUnlocked
@@ -793,32 +1041,38 @@ function renderDetail(){
   const dateInput = document.getElementById('milestoneDate');
   if (msUnlocked){
     dateRow.style.display = 'flex';
-    dateInput.value = emp.milestoneDate || todayISO();
-    if (!emp.milestoneDate){ emp.milestoneDate = dateInput.value; }
+    dateInput.value = emp.milestoneDate || '';
+    dateInput.disabled = readOnly;
+    if (!emp.milestoneDate && !readOnly){
+      const d = todayISO();
+      dateInput.value = d;
+      patchEmployee(emp.id, { milestoneDate: d });
+    }
   } else {
     dateRow.style.display = 'none';
   }
 
-  // wire events (delegated fresh each render)
-  container.querySelectorAll('.status-toggle button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const itemId = btn.parentElement.getAttribute('data-item');
-      const s = btn.getAttribute('data-s');
-      const rec = emp.records[itemId];
-      rec.status = s;
-      if (s !== 'pending' && !rec.date) rec.date = todayISO();
-      if (s === 'pending'){ /* keep history but disable fields */ }
-      renderDetail();
-      renderDashboard();
+  if (!readOnly){
+    container.querySelectorAll('.status-toggle button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const itemId = btn.parentElement.getAttribute('data-item');
+        const s = btn.getAttribute('data-s');
+        const rec = emp.records[itemId] || {status:'pending', date:'', mentor:''};
+        const patch = { [`records.${itemId}.status`]: s };
+        if (s !== 'pending' && !rec.date){
+          patch[`records.${itemId}.date`] = todayISO();
+        }
+        updateDoc(doc(db, 'employees', emp.id), { ...patch, updatedAt: serverTimestamp() });
+      });
     });
-  });
-  container.querySelectorAll('.item-date, .item-mentor').forEach(inp=>{
-    inp.addEventListener('change', ()=>{
-      const itemId = inp.getAttribute('data-item');
-      const field = inp.getAttribute('data-field');
-      emp.records[itemId][field] = inp.value;
+    container.querySelectorAll('.item-date, .item-mentor').forEach(inp=>{
+      inp.addEventListener('change', ()=>{
+        const itemId = inp.getAttribute('data-item');
+        const field = inp.getAttribute('data-field');
+        patchItemRecord(emp.id, itemId, field, inp.value);
+      });
     });
-  });
+  }
 }
 
 function burstConfetti(color, big){
@@ -845,8 +1099,8 @@ function openAddDialog(){
   document.getElementById('fName').focus();
 }
 function openEditDialog(){
-  const emp = state.employees.find(e=>e.id===currentEmployeeId);
-  if (!emp) return;
+  const emp = employees.find(e=>e.id===currentEmployeeId);
+  if (!emp || emp.ownerUid !== currentUser.uid) return;
   editingEmployeeId = emp.id;
   document.getElementById('empDialogTitle').textContent = '編輯新人資料';
   document.getElementById('fName').value = emp.name;
@@ -855,48 +1109,61 @@ function openEditDialog(){
   empDialog.showModal();
 }
 document.getElementById('empDialogCancel').addEventListener('click', ()=> empDialog.close());
-document.getElementById('empDialogSave').addEventListener('click', ()=>{
+document.getElementById('empDialogSave').addEventListener('click', async ()=>{
   const name = document.getElementById('fName').value.trim();
   if (!name){ document.getElementById('fName').focus(); return; }
   const role = document.getElementById('fRole').value.trim();
   const join = document.getElementById('fJoin').value || todayISO();
-  if (editingEmployeeId){
-    const emp = state.employees.find(e=>e.id===editingEmployeeId);
-    emp.name = name; emp.role = role; emp.joinDate = join;
-    renderDetail();
-  } else {
-    const emp = newEmployee(name, role, join);
-    state.employees.push(emp);
+  const saveBtn = document.getElementById('empDialogSave');
+  saveBtn.disabled = true;
+  try{
+    if (editingEmployeeId){
+      await patchEmployee(editingEmployeeId, { name, role, joinDate: join });
+    } else {
+      await createEmployee(name, role, join);
+    }
+    empDialog.close();
+  } catch(err){
+    alert('儲存失敗：' + err.message);
+  } finally {
+    saveBtn.disabled = false;
   }
-  empDialog.close();
-  renderDashboard();
 });
 
 /* ================= Delete confirm ================= */
 const confirmDialog = document.getElementById('confirmDialog');
 document.getElementById('btnDeleteEmployee').addEventListener('click', ()=> confirmDialog.showModal());
 document.getElementById('confirmCancel').addEventListener('click', ()=> confirmDialog.close());
-document.getElementById('confirmOk').addEventListener('click', ()=>{
-  state.employees = state.employees.filter(e=>e.id!==currentEmployeeId);
-  confirmDialog.close();
-  backToDashboard();
+document.getElementById('confirmOk').addEventListener('click', async ()=>{
+  try{
+    await removeEmployee(currentEmployeeId);
+    confirmDialog.close();
+    backToDashboard();
+  } catch(err){
+    alert('刪除失敗：' + err.message);
+  }
 });
 
-/* ================= Export / Import (file-based, no browser storage) ================= */
+/* ================= Export (report) / Import (legacy JSON) ================= */
 document.getElementById('btnExport').addEventListener('click', ()=>{
-  const payload = { exportedAt: new Date().toISOString(), state };
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    exportedBy: currentUser.email,
+    scope: scopeMode,
+    employees,
+  };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `新人培訓紀錄_${todayISO()}.json`;
+  a.download = `新人培訓報表_${todayISO()}.json`;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 });
-document.getElementById('btnImport').addEventListener('click', ()=> document.getElementById('fileImport').click());
 
+document.getElementById('btnImport').addEventListener('click', ()=> document.getElementById('fileImport').click());
 const importDialog = document.getElementById('importDialog');
-let pendingImport = null;
+let pendingImportEmployees = null;
 
 document.getElementById('fileImport').addEventListener('change', (e)=>{
   const file = e.target.files[0];
@@ -905,18 +1172,12 @@ document.getElementById('fileImport').addEventListener('change', (e)=>{
   reader.onload = () => {
     try{
       const payload = JSON.parse(reader.result);
-      const incoming = payload.state || payload;
-      if (!incoming || !Array.isArray(incoming.employees)) throw new Error('格式不正確');
-      if (state.employees.length === 0){
-        state = incoming;
-        idCounter += 1000;
-        backToDashboard();
-      } else {
-        pendingImport = incoming;
-        document.getElementById('importCurrentCount').textContent = state.employees.length;
-        document.getElementById('importIncomingCount').textContent = incoming.employees.length;
-        importDialog.showModal();
-      }
+      const list = payload.employees || (payload.state && payload.state.employees) || null;
+      if (!Array.isArray(list)) throw new Error('格式不正確');
+      pendingImportEmployees = list;
+      document.getElementById('importIncomingCount').textContent = list.length;
+      document.getElementById('importAsUser').textContent = currentUser.displayName || currentUser.email;
+      importDialog.showModal();
     } catch(err){
       alert('匯入失敗：檔案格式不正確或已損毀。');
     }
@@ -924,29 +1185,34 @@ document.getElementById('fileImport').addEventListener('change', (e)=>{
   };
   reader.readAsText(file);
 });
-
-document.getElementById('importCancel').addEventListener('click', ()=>{
-  pendingImport = null;
-  importDialog.close();
-});
-document.getElementById('importReplace').addEventListener('click', ()=>{
-  if (!pendingImport) return;
-  state = pendingImport;
-  idCounter += 1000;
-  pendingImport = null;
-  importDialog.close();
-  backToDashboard();
-});
-document.getElementById('importMerge').addEventListener('click', ()=>{
-  if (!pendingImport) return;
-  const existingIds = new Set(state.employees.map(e=>e.id));
-  pendingImport.employees.forEach(emp=>{
-    if (existingIds.has(emp.id)) emp.id = uid('emp');
-    state.employees.push(emp);
-  });
-  pendingImport = null;
-  importDialog.close();
-  backToDashboard();
+document.getElementById('importCancel').addEventListener('click', ()=>{ pendingImportEmployees=null; importDialog.close(); });
+document.getElementById('importConfirm').addEventListener('click', async ()=>{
+  if (!pendingImportEmployees) return;
+  const btn = document.getElementById('importConfirm');
+  btn.disabled = true;
+  try{
+    for (const legacy of pendingImportEmployees){
+      await addDoc(collection(db, 'employees'), {
+        ownerUid: currentUser.uid,
+        ownerName: currentUser.displayName || currentUser.email,
+        ownerEmail: currentUser.email,
+        name: legacy.name || '未命名',
+        role: legacy.role || '',
+        joinDate: legacy.joinDate || todayISO(),
+        colorIdx: Math.floor(Math.random()*AVATAR_COLORS.length),
+        milestoneDate: legacy.milestoneDate || '',
+        records: legacy.records || emptyRecords(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+    pendingImportEmployees = null;
+    importDialog.close();
+  } catch(err){
+    alert('匯入失敗：' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 /* ================= Wire top-level nav ================= */
@@ -957,14 +1223,9 @@ document.getElementById('btnPrint').addEventListener('click', ()=> window.print(
 document.getElementById('searchInput').addEventListener('input', renderDashboard);
 document.getElementById('sortSelect').addEventListener('change', renderDashboard);
 document.getElementById('milestoneDate').addEventListener('change', (e)=>{
-  const emp = state.employees.find(e=>e.id===currentEmployeeId);
-  if (emp) emp.milestoneDate = e.target.value;
+  const emp = employees.find(e=>e.id===currentEmployeeId);
+  if (emp && emp.ownerUid === currentUser.uid) patchEmployee(emp.id, { milestoneDate: e.target.value });
 });
-
-/* ================= Init ================= */
-renderDashboard();
-
-})();
 </script>
 </body>
 </html>
