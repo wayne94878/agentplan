@@ -280,6 +280,12 @@
   .item-mentor{ width:96px; border:1px solid var(--border-strong); border-radius:8px; padding:6px 8px; font-size:12px; }
   .item-date:disabled, .item-mentor:disabled{ background:var(--page); color:var(--text-muted); }
 
+  .item-row.drill-row{
+    border-bottom:none; padding:4px 0 9px 14px; margin-left:4px;
+    border-left:3px solid var(--warning-wash);
+  }
+  .item-row:has(+ .drill-row){ border-bottom:none; padding-bottom:4px; }
+  .drill-label{ font-size:12.5px; color:var(--text-secondary); font-weight:600; }
   .course-note{
     grid-column: 1 / -1; margin:-2px 0 8px; background:var(--stage1-wash); border-radius:10px;
     padding:2px 12px;
@@ -1020,6 +1026,23 @@ function renderDetail(){
           <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${(rec.status==='pending'||readOnly)?'disabled':''}>
         `;
         block.appendChild(row);
+        if (cat.id === 'course'){
+          const drill = (rec.drill) || {status:'pending', date:'', mentor:''};
+          const dLocked = (drill.status==='pending' || readOnly) ? 'disabled' : '';
+          const drow = document.createElement('div');
+          drow.className = 'item-row drill-row';
+          drow.innerHTML = `
+            <div class="status-toggle" data-item="${it.id}" data-kind="drill">
+              <button type="button" data-s="pending" ${readOnly?'disabled':''} class="${drill.status==='pending'?'active':''}">未演練</button>
+              <button type="button" data-s="inprogress" ${readOnly?'disabled':''} class="${drill.status==='inprogress'?'active':''}">演練中</button>
+              <button type="button" data-s="done" ${readOnly?'disabled':''} class="${drill.status==='done'?'active':''}">已通過</button>
+            </div>
+            <div class="item-label drill-label">🎭 演練</div>
+            <input type="date" class="item-date" data-item="${it.id}" data-field="drill.date" value="${drill.date||''}" ${dLocked} title="演練日期">
+            <input type="text" class="item-mentor" data-item="${it.id}" data-field="drill.mentor" value="${escapeHtml(drill.mentor||'')}" placeholder="主管" ${dLocked}>
+          `;
+          block.appendChild(drow);
+        }
         if (COURSE_NOTES[it.id]){
           const note = document.createElement('details');
           note.className = 'course-note';
@@ -1061,10 +1084,13 @@ function renderDetail(){
       btn.addEventListener('click', ()=>{
         const itemId = btn.parentElement.getAttribute('data-item');
         const s = btn.getAttribute('data-s');
-        const rec = emp.records[itemId] || {status:'pending', date:'', mentor:''};
-        const patch = { [`records.${itemId}.status`]: s };
+        const isDrill = btn.parentElement.getAttribute('data-kind') === 'drill';
+        const base = (emp.records && emp.records[itemId]) || {status:'pending', date:'', mentor:''};
+        const rec = isDrill ? (base.drill || {}) : base;
+        const prefix = isDrill ? `records.${itemId}.drill` : `records.${itemId}`;
+        const patch = { [`${prefix}.status`]: s };
         if (s !== 'pending' && !rec.date){
-          patch[`records.${itemId}.date`] = todayISO();
+          patch[`${prefix}.date`] = todayISO();
         }
         updateDoc(doc(db, 'employees', emp.id), { ...patch, updatedAt: serverTimestamp() });
       });
