@@ -677,6 +677,9 @@ const COURSE_NOTES = {
   s2c4: ['新人培訓標準作業流程（SOP）整體介紹', '如何運用本培訓紀錄表追蹤新人進度', '培訓帶領技巧與新人常見問題處理方式'],
 };
 
+/* 不需要演練列的課程：保險意義與功能、威盛制度、客戶經營與轉介紹延伸、推銷職能認證，以及業務員階段全部課程 */
+const NO_DRILL = new Set(['s1c1','s1c2','s1c6','s1c8','s2c1','s2c2','s2c3','s2c4']);
+
 function allItems(){
   const out = [];
   TRAINING_STRUCTURE.forEach(st => st.categories.forEach(c => c.items.forEach(it => out.push({...it, stage:st.id, cat:c.id}))));
@@ -1026,7 +1029,7 @@ function renderDetail(){
           <input type="text" class="item-mentor" data-item="${it.id}" data-field="mentor" value="${escapeHtml(rec.mentor||'')}" placeholder="主管" ${(rec.status==='pending'||readOnly)?'disabled':''}>
         `;
         block.appendChild(row);
-        if (cat.id === 'course'){
+        if (cat.id === 'course' && !NO_DRILL.has(it.id)){
           const drill = (rec.drill) || {status:'pending', date:'', mentor:''};
           const dLocked = (drill.status==='pending' || readOnly) ? 'disabled' : '';
           const drow = document.createElement('div');
